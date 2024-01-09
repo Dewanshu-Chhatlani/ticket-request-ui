@@ -18,6 +18,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  CircularProgress,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -42,6 +43,7 @@ function ListRequestsTable() {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const tickets = useSelector((state) => state.ticket.ticket);
+  const isLoading = useSelector((state) => state.ticket.loading);
 
   useEffect(() => {
     dispatch(fetchTicket(page + 1, rowsPerPage));
@@ -64,8 +66,6 @@ function ListRequestsTable() {
 
   const handleSortChange = (event) => {
     setSortBy(event.target.value);
-    // Perform sorting logic here based on the selected option
-    // This can sort your 'requests' array based on the selected sort option
   };
 
   const handleClickOpen = () => {
@@ -127,7 +127,6 @@ function ListRequestsTable() {
             </MenuItem>
             <MenuItem value="title">Title</MenuItem>
             <MenuItem value="userId">Description</MenuItem>
-            {/* Add more sort options as needed */}
           </Select>
         </FormControl>
         <Button
@@ -147,43 +146,57 @@ function ListRequestsTable() {
         handleDelete={handleDeleteConfirmation}
       />
       <Box mb={2}>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead sx={{ backgroundColor: "#1976d2", color: "white" }}>
-              <TableRow>
-                <TableCell sx={{ color: "white" }}>Title</TableCell>
-                <TableCell sx={{ color: "white" }}>Description</TableCell>
-                <TableCell sx={{ color: "white" }}>User ID</TableCell>
-                <TableCell sx={{ color: "white" }}>Created at</TableCell>
-                <TableCell sx={{ color: "white" }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tickets.map((request) => (
-                <TableRow
-                  key={request.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell sx={{ py: 1 }}>{request.title}</TableCell>
-                  <TableCell sx={{ py: 1 }}>{request.description}</TableCell>
-                  <TableCell sx={{ py: 1 }}>{request.user_id}</TableCell>
-                  <TableCell sx={{ py: 1 }}>{request.created_at}</TableCell>
-                  <TableCell sx={{ py: 1 }}>
-                    <IconButton aria-label="view">
-                      <VisibilityIcon />
-                    </IconButton>
-                    <IconButton aria-label="edit">
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={handleDeleteOpen} aria-label="delete">
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
+        {isLoading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="300px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead sx={{ backgroundColor: "#1976d2", color: "white" }}>
+                <TableRow>
+                  <TableCell sx={{ color: "white" }}>Title</TableCell>
+                  <TableCell sx={{ color: "white" }}>Description</TableCell>
+                  <TableCell sx={{ color: "white" }}>User ID</TableCell>
+                  <TableCell sx={{ color: "white" }}>Created at</TableCell>
+                  <TableCell sx={{ color: "white" }}>Actions</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {tickets.map((request) => (
+                  <TableRow
+                    key={request.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell sx={{ py: 1 }}>{request.title}</TableCell>
+                    <TableCell sx={{ py: 1 }}>{request.description}</TableCell>
+                    <TableCell sx={{ py: 1 }}>{request.user_id}</TableCell>
+                    <TableCell sx={{ py: 1 }}>{request.created_at}</TableCell>
+                    <TableCell sx={{ py: 1 }}>
+                      <IconButton aria-label="view">
+                        <VisibilityIcon />
+                      </IconButton>
+                      <IconButton aria-label="edit">
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={handleDeleteOpen}
+                        aria-label="delete"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Box>
       <TablePagination
         rowsPerPageOptions={[10, 20, 50]}
