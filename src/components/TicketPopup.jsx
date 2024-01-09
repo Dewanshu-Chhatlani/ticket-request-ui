@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Dialog,
@@ -8,11 +8,15 @@ import {
   TextField,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { createTicket } from "../redux/actions/ticketActions";
+import { createTicket, updateTicket } from "../redux/actions/ticketActions";
 
-function TicketPopup({ open, handleClose }) {
+function TicketPopup({ open, handleClose, mode, ticket }) {
   const dispatch = useDispatch();
   const [ticketData, setTicketData] = useState({ title: "", description: "" });
+
+  useEffect(() => {
+    setTicketData({ ...ticket });
+  }, [ticket]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +24,11 @@ function TicketPopup({ open, handleClose }) {
   };
 
   const handleSave = () => {
-    dispatch(createTicket(ticketData));
+    if (mode === "create") {
+      dispatch(createTicket(ticketData));
+    } else if (mode === "edit") {
+      dispatch(updateTicket(ticketData));
+    }
     closePopup();
   };
 
@@ -41,7 +49,13 @@ function TicketPopup({ open, handleClose }) {
       }}
       maxWidth="md"
     >
-      <DialogTitle>Create New Ticket</DialogTitle>
+      <DialogTitle>
+        {mode === "create"
+          ? "Create New Ticket"
+          : mode === "edit"
+          ? "Edit Ticket"
+          : "View Ticket"}
+      </DialogTitle>
       <DialogContent dividers>
         <TextField
           autoFocus
@@ -67,16 +81,18 @@ function TicketPopup({ open, handleClose }) {
           onChange={handleInputChange}
         />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={closePopup}>Cancel</Button>
-        <Button
-          onClick={() => handleSave(ticketData)}
-          variant="contained"
-          color="primary"
-        >
-          Save
-        </Button>
-      </DialogActions>
+      {mode === "create" || mode === "edit" ? (
+        <DialogActions>
+          <Button onClick={closePopup}>Cancel</Button>
+          <Button
+            onClick={() => handleSave(ticketData)}
+            variant="contained"
+            color="primary"
+          >
+            {mode === "create" ? "Save" : "Update"}
+          </Button>
+        </DialogActions>
+      ) : null}
     </Dialog>
   );
 }

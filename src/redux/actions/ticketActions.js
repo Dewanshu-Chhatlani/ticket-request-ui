@@ -29,6 +29,20 @@ export const createTicketFailure = (error) => ({
   payload: error,
 });
 
+export const updateTicketRequest = () => ({
+  type: types.UPDATE_TICKET_REQUEST,
+});
+
+export const updateTicketSuccess = (ticketData) => ({
+  type: types.UPDATE_TICKET_SUCCESS,
+  payload: ticketData,
+});
+
+export const updateTicketFailure = (error) => ({
+  type: types.UPDATE_TICKET_FAILURE,
+  payload: error,
+});
+
 export const deleteTicketRequest = () => ({
   type: types.DELETE_TICKET_REQUEST,
 });
@@ -96,6 +110,28 @@ export const createTicket = (ticketData) => {
       })
       .catch((error) => {
         dispatch(createTicketFailure(error.message));
+      });
+  };
+};
+
+export const updateTicket = (ticketData) => {
+  return (dispatch, getState) => {
+    dispatch(updateTicketRequest());
+
+    const { token } = getState().auth.user;
+
+    axios
+      .put(`http://localhost:5000/tickets/${ticketData.id}`, ticketData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        dispatch(updateTicketSuccess(response.data));
+      })
+      .catch((error) => {
+        dispatch(updateTicketFailure(error.message));
       });
   };
 };

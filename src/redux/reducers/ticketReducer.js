@@ -7,9 +7,12 @@ const initialState = {
 };
 
 const ticketReducer = (state = initialState, action) => {
+  let tickets = [...state.ticket];
+
   switch (action.type) {
     case types.FETCH_TICKET_REQUEST:
     case types.CREATE_TICKET_REQUEST:
+    case types.UPDATE_TICKET_REQUEST:
     case types.DELETE_TICKET_REQUEST:
       return {
         ...state,
@@ -28,8 +31,19 @@ const ticketReducer = (state = initialState, action) => {
         loading: false,
         ticket: [action.payload, ...state.ticket],
       };
+    case types.UPDATE_TICKET_SUCCESS:
+      const ticketIndex = tickets.findIndex(
+        (ticket) => ticket.id === action.payload.id
+      );
+
+      tickets[ticketIndex] = { ...action.payload };
+
+      return {
+        ...state,
+        loading: false,
+        ticket: [...tickets],
+      };
     case types.DELETE_TICKET_SUCCESS:
-      let tickets = [...state.ticket];
       tickets = tickets.filter((ticket) => ticket.id !== action.payload.id);
 
       return {
@@ -39,6 +53,7 @@ const ticketReducer = (state = initialState, action) => {
       };
     case types.FETCH_TICKET_FAILURE:
     case types.CREATE_TICKET_FAILURE:
+    case types.UPDATE_TICKET_FAILURE:
     case types.DELETE_TICKET_FAILURE:
       return {
         ...state,

@@ -41,7 +41,8 @@ function ListRequestsTable() {
   const [sortBy, setSortBy] = useState("");
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [recordToDelete, setRecordToDelete] = useState({});
+  const [recordForAction, setRecordForAction] = useState({});
+  const [mode, setMode] = useState("");
 
   const tickets = useSelector((state) => state.ticket.ticket);
   const isLoading = useSelector((state) => state.ticket.loading);
@@ -68,26 +69,44 @@ function ListRequestsTable() {
     setSortBy(event.target.value);
   };
 
-  const handleClickOpen = () => {
+  const handleCreateButton = () => {
     setOpen(true);
+    setMode("create");
+    setRecordForAction({ title: "", description: "" });
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleEditButton = (ticket) => {
+    setOpen(true);
+    setMode("edit");
+    setRecordForAction(ticket);
   };
 
-  const handleDeleteOpen = (ticket) => {
+  const handleViewButton = (ticket) => {
+    setOpen(true);
+    setMode("view");
+    setRecordForAction(ticket);
+  };
+
+  const handleDeleteButton = (ticket) => {
     setDeleteOpen(true);
-    setRecordToDelete(ticket);
+    setMode("delete");
+    setRecordForAction(ticket);
+  };
+
+  const handlePopupClose = () => {
+    setOpen(false);
+    setRecordForAction({});
+    setMode("");
   };
 
   const handleDeleteClose = () => {
     setDeleteOpen(false);
-    setRecordToDelete({});
+    setMode("");
+    setRecordForAction({});
   };
 
   const handleDeleteConfirmation = () => {
-    dispatch(deleteTicket(recordToDelete));
+    dispatch(deleteTicket(recordForAction));
     handleDeleteClose();
   };
 
@@ -136,13 +155,18 @@ function ListRequestsTable() {
           variant="contained"
           color="success"
           startIcon={<AddCircleOutlineIcon />}
-          onClick={handleClickOpen}
+          onClick={handleCreateButton}
           sx={{ borderRadius: 20 }}
         >
           Create Ticket
         </Button>
       </Box>
-      <TicketPopup open={open} handleClose={handleClose} />
+      <TicketPopup
+        open={open}
+        handleClose={handlePopupClose}
+        mode={mode}
+        ticket={recordForAction}
+      />
       <DeleteConfirmationPopup
         open={deleteOpen}
         handleClose={handleDeleteClose}
@@ -181,15 +205,21 @@ function ListRequestsTable() {
                     <TableCell sx={{ py: 1 }}>{ticket.user_id}</TableCell>
                     <TableCell sx={{ py: 1 }}>{ticket.created_at}</TableCell>
                     <TableCell sx={{ py: 1 }}>
-                      <IconButton aria-label="view">
+                      <IconButton
+                        aria-label="view"
+                        onClick={() => handleViewButton(ticket)}
+                      >
                         <VisibilityIcon />
                       </IconButton>
-                      <IconButton aria-label="edit">
+                      <IconButton
+                        aria-label="edit"
+                        onClick={() => handleEditButton(ticket)}
+                      >
                         <EditIcon />
                       </IconButton>
                       <IconButton
-                        onClick={() => handleDeleteOpen(ticket)}
                         aria-label="delete"
+                        onClick={() => handleDeleteButton(ticket)}
                       >
                         <DeleteIcon />
                       </IconButton>
