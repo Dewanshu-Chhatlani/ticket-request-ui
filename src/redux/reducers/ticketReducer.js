@@ -10,16 +10,11 @@ const ticketReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.FETCH_TICKET_REQUEST:
     case types.CREATE_TICKET_REQUEST:
+    case types.DELETE_TICKET_REQUEST:
       return {
         ...state,
         loading: true,
         error: null,
-      };
-    case types.CREATE_TICKET_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        ticket: [...state.ticket, action.payload],
       };
     case types.FETCH_TICKET_SUCCESS:
       return {
@@ -27,8 +22,24 @@ const ticketReducer = (state = initialState, action) => {
         loading: false,
         ticket: action.payload,
       };
+    case types.CREATE_TICKET_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        ticket: [action.payload, ...state.ticket],
+      };
+    case types.DELETE_TICKET_SUCCESS:
+      let tickets = [...state.ticket];
+      tickets = tickets.filter((ticket) => ticket.id !== action.payload.id);
+
+      return {
+        ...state,
+        loading: false,
+        ticket: tickets,
+      };
     case types.FETCH_TICKET_FAILURE:
     case types.CREATE_TICKET_FAILURE:
+    case types.DELETE_TICKET_FAILURE:
       return {
         ...state,
         loading: false,

@@ -21,7 +21,12 @@ function TicketPopup({ open, handleClose }) {
 
   const handleSave = () => {
     dispatch(createTicket(ticketData));
+    closePopup();
+  };
+
+  const closePopup = () => {
     handleClose();
+    setTicketData({ title: "", description: "" });
   };
 
   return (
@@ -63,7 +68,7 @@ function TicketPopup({ open, handleClose }) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={closePopup}>Cancel</Button>
         <Button
           onClick={() => handleSave(ticketData)}
           variant="contained"

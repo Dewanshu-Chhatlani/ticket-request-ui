@@ -29,6 +29,20 @@ export const createTicketFailure = (error) => ({
   payload: error,
 });
 
+export const deleteTicketRequest = () => ({
+  type: types.DELETE_TICKET_REQUEST,
+});
+
+export const deleteTicketSuccess = (ticketData) => ({
+  type: types.DELETE_TICKET_SUCCESS,
+  payload: ticketData,
+});
+
+export const deleteTicketFailure = (error) => ({
+  type: types.DELETE_TICKET_FAILURE,
+  payload: error,
+});
+
 export const fetchTicket = (
   page = 1,
   perPage = 10,
@@ -83,5 +97,25 @@ export const createTicket = (ticketData) => {
       .catch((error) => {
         dispatch(createTicketFailure(error.message));
       });
+  };
+};
+
+export const deleteTicket = (ticket) => {
+  return async (dispatch, getState) => {
+    dispatch(deleteTicketRequest());
+
+    const { token } = getState().auth.user;
+
+    try {
+      await axios.delete(`http://localhost:5000/tickets/${ticket.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      dispatch(deleteTicketSuccess({ id: ticket.id }));
+    } catch (error) {
+      dispatch(deleteTicketFailure(error.message));
+    }
   };
 };

@@ -30,7 +30,7 @@ import {
 
 import TicketPopup from "./TicketPopup";
 import DeleteConfirmationPopup from "./DeleteConfirmationPopup";
-import { fetchTicket } from "../redux/actions/ticketActions";
+import { fetchTicket, deleteTicket } from "../redux/actions/ticketActions";
 
 function ListRequestsTable() {
   const dispatch = useDispatch();
@@ -41,6 +41,7 @@ function ListRequestsTable() {
   const [sortBy, setSortBy] = useState("");
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [recordToDelete, setRecordToDelete] = useState({});
 
   const tickets = useSelector((state) => state.ticket.ticket);
   const isLoading = useSelector((state) => state.ticket.loading);
@@ -75,18 +76,19 @@ function ListRequestsTable() {
     setOpen(false);
   };
 
-  const handleDeleteOpen = () => {
+  const handleDeleteOpen = (ticket) => {
     setDeleteOpen(true);
+    setRecordToDelete(ticket);
   };
 
   const handleDeleteClose = () => {
     setDeleteOpen(false);
+    setRecordToDelete({});
   };
 
-  const handleDeleteConfirmation = (ticketData) => {
-    // Perform ticket save logic using ticketData
-    console.log("Ticket Saved:", ticketData);
-    setDeleteOpen(false);
+  const handleDeleteConfirmation = () => {
+    dispatch(deleteTicket(recordToDelete));
+    handleDeleteClose();
   };
 
   return (
@@ -169,15 +171,15 @@ function ListRequestsTable() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tickets.map((request) => (
+                {tickets.map((ticket) => (
                   <TableRow
-                    key={request.id}
+                    key={ticket.id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell sx={{ py: 1 }}>{request.title}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{request.description}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{request.user_id}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{request.created_at}</TableCell>
+                    <TableCell sx={{ py: 1 }}>{ticket.title}</TableCell>
+                    <TableCell sx={{ py: 1 }}>{ticket.description}</TableCell>
+                    <TableCell sx={{ py: 1 }}>{ticket.user_id}</TableCell>
+                    <TableCell sx={{ py: 1 }}>{ticket.created_at}</TableCell>
                     <TableCell sx={{ py: 1 }}>
                       <IconButton aria-label="view">
                         <VisibilityIcon />
@@ -186,7 +188,7 @@ function ListRequestsTable() {
                         <EditIcon />
                       </IconButton>
                       <IconButton
-                        onClick={handleDeleteOpen}
+                        onClick={() => handleDeleteOpen(ticket)}
                         aria-label="delete"
                       >
                         <DeleteIcon />
