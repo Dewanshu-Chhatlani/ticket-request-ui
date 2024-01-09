@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Table,
   TableBody,
@@ -28,26 +29,23 @@ import {
 
 import TicketPopup from "./TicketPopup";
 import DeleteConfirmationPopup from "./DeleteConfirmationPopup";
+import { fetchTicket } from "../redux/actions/ticketActions";
 
 function ListRequestsTable() {
+  const dispatch = useDispatch();
+
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchText, setSearchText] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  // Dummy data for the table
-  const requests = [
-    {
-      id: 1,
-      title: "Request 1",
-      description: "Description 1",
-      userId: 123,
-      createdAt: "2024-01-07",
-    },
-    // Add more request objects here
-  ];
+  const tickets = useSelector((state) => state.ticket.ticket);
+
+  useEffect(() => {
+    dispatch(fetchTicket(page + 1, rowsPerPage));
+  }, [dispatch, page, rowsPerPage]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -161,41 +159,36 @@ function ListRequestsTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {requests
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((request) => (
-                  <TableRow
-                    key={request.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell sx={{ py: 1 }}>{request.title}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{request.description}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{request.userId}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{request.createdAt}</TableCell>
-                    <TableCell sx={{ py: 1 }}>
-                      <IconButton aria-label="view">
-                        <VisibilityIcon />
-                      </IconButton>
-                      <IconButton aria-label="edit">
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={handleDeleteOpen}
-                        aria-label="delete"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {tickets.map((request) => (
+                <TableRow
+                  key={request.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell sx={{ py: 1 }}>{request.title}</TableCell>
+                  <TableCell sx={{ py: 1 }}>{request.description}</TableCell>
+                  <TableCell sx={{ py: 1 }}>{request.user_id}</TableCell>
+                  <TableCell sx={{ py: 1 }}>{request.created_at}</TableCell>
+                  <TableCell sx={{ py: 1 }}>
+                    <IconButton aria-label="view">
+                      <VisibilityIcon />
+                    </IconButton>
+                    <IconButton aria-label="edit">
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={handleDeleteOpen} aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Box>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 20, 50]}
         component="div"
-        count={requests.length}
+        count={90}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
