@@ -8,8 +8,9 @@ import {
   MenuItem,
   Box,
   Avatar,
+  Badge,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearUserData } from "../redux/actions/authActions";
 
@@ -19,6 +20,8 @@ function Navbar() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { admin } = useSelector((state) => state?.auth?.user?.user);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,6 +44,7 @@ function Navbar() {
           Ticket Request App
         </Typography>
         <Box>
+          {admin ? <Badge badgeContent={"Admin"} color="primary" /> : null}
           <IconButton
             size="large"
             aria-label="account of current user"
