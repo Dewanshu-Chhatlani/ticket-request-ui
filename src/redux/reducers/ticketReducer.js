@@ -3,6 +3,7 @@ import * as types from "../types";
 const initialState = {
   loading: false,
   ticket: [],
+  total_count: 0,
   error: null,
 };
 
@@ -23,13 +24,15 @@ const ticketReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        ticket: action.payload,
+        ticket: action.payload.records,
+        total_count: action.payload.total_count,
       };
     case types.CREATE_TICKET_SUCCESS:
       return {
         ...state,
         loading: false,
         ticket: [action.payload, ...state.ticket],
+        total_count: state.total_count + 1,
       };
     case types.UPDATE_TICKET_SUCCESS:
       const ticketIndex = tickets.findIndex(
@@ -50,6 +53,7 @@ const ticketReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         ticket: tickets,
+        total_count: state.total_count - 1,
       };
     case types.FETCH_TICKET_FAILURE:
     case types.CREATE_TICKET_FAILURE:

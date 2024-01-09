@@ -45,6 +45,7 @@ function ListRequestsTable() {
   const [mode, setMode] = useState("");
 
   const tickets = useSelector((state) => state.ticket.ticket);
+  const totalCount = useSelector((state) => state.ticket.total_count);
   const isLoading = useSelector((state) => state.ticket.loading);
 
   useEffect(() => {
@@ -234,7 +235,7 @@ function ListRequestsTable() {
       <TablePagination
         rowsPerPageOptions={[10, 20, 50]}
         component="div"
-        count={90}
+        count={totalCount || 0}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
