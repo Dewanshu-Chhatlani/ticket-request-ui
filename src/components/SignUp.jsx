@@ -7,7 +7,7 @@ import {
   Snackbar,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { signUpUser } from "../redux/actions/signUpActions";
+import { signUpUser } from "../redux/actions/authActions";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearUserData } from "../redux/actions/signInActions";
+import { clearUserData } from "../redux/actions/authActions";
 
 function Navbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
