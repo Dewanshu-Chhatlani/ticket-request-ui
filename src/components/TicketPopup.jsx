@@ -7,13 +7,21 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { createTicket } from "../redux/actions/ticketActions";
 
-function TicketPopup({ open, handleClose, handleSave }) {
+function TicketPopup({ open, handleClose }) {
+  const dispatch = useDispatch();
   const [ticketData, setTicketData] = useState({ title: "", description: "" });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setTicketData({ ...ticketData, [name]: value });
+  };
+
+  const handleSave = () => {
+    dispatch(createTicket(ticketData));
+    handleClose();
   };
 
   return (

@@ -78,12 +78,6 @@ function ListRequestsTable() {
     setOpen(false);
   };
 
-  const handleSave = (ticketData) => {
-    // Perform ticket save logic using ticketData
-    console.log("Ticket Saved:", ticketData);
-    setOpen(false);
-  };
-
   const handleDeleteOpen = () => {
     setDeleteOpen(true);
   };
@@ -148,11 +142,7 @@ function ListRequestsTable() {
           Create Ticket
         </Button>
       </Box>
-      <TicketPopup
-        open={open}
-        handleClose={handleClose}
-        handleSave={handleSave}
-      />
+      <TicketPopup open={open} handleClose={handleClose} />
       <DeleteConfirmationPopup
         open={deleteOpen}
         handleClose={handleDeleteClose}
