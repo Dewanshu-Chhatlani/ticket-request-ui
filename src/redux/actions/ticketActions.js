@@ -29,21 +29,33 @@ export const createTicketFailure = (error) => ({
   payload: error,
 });
 
-export const fetchTicket = (page = 1, perPage = 10) => {
+export const fetchTicket = (
+  page = 1,
+  perPage = 10,
+  sortBy = "",
+  searchQuery = ""
+) => {
   return async (dispatch, getState) => {
     dispatch(fetchTicketRequest());
 
     const { token } = getState().auth.user;
 
+    let listTicketsUrl = `http://localhost:5000/tickets?page=${page}&per_page=${perPage}`;
+
+    if (sortBy) {
+      listTicketsUrl += `&sort_by=${sortBy}`;
+    }
+
+    if (searchQuery) {
+      listTicketsUrl += `&query=${searchQuery}`;
+    }
+
     try {
-      const response = await axios.get(
-        `http://localhost:5000/tickets?page=${page}&per_page=${perPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(listTicketsUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       dispatch(fetchTicketSuccess(response.data));
     } catch (error) {

@@ -46,8 +46,8 @@ function ListRequestsTable() {
   const isLoading = useSelector((state) => state.ticket.loading);
 
   useEffect(() => {
-    dispatch(fetchTicket(page + 1, rowsPerPage));
-  }, [dispatch, page, rowsPerPage]);
+    dispatch(fetchTicket(page + 1, rowsPerPage, sortBy));
+  }, [dispatch, page, rowsPerPage, sortBy]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -65,6 +65,7 @@ function ListRequestsTable() {
   };
 
   const handleSortChange = (event) => {
+    setPage(0);
     setSortBy(event.target.value);
   };
 
@@ -126,7 +127,7 @@ function ListRequestsTable() {
               <em>None</em>
             </MenuItem>
             <MenuItem value="title">Title</MenuItem>
-            <MenuItem value="userId">Description</MenuItem>
+            <MenuItem value="description">Description</MenuItem>
           </Select>
         </FormControl>
         <Button
