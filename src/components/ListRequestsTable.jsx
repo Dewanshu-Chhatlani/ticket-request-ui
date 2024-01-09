@@ -58,10 +58,8 @@ function ListRequestsTable() {
     setPage(0);
   };
 
-  const handleSearch = (event) => {
-    setSearchText(event.target.value);
-    // Perform search/filter logic here based on the searchText
-    // This can filter your 'requests' array based on the search text
+  const handleSearch = () => {
+    dispatch(fetchTicket(page + 1, rowsPerPage, sortBy, searchText));
   };
 
   const handleSortChange = (event) => {
@@ -104,11 +102,13 @@ function ListRequestsTable() {
             variant="outlined"
             placeholder="Search..."
             value={searchText}
-            onChange={handleSearch}
+            onChange={(e) => setSearchText(e.target.value)}
             InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton aria-label="search" onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconButton>
                 </InputAdornment>
               ),
             }}
