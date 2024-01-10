@@ -250,84 +250,106 @@ function ListRequestsTable() {
         handleConfirmation={handleConfirmation}
         mode={mode}
       />
-      <Box mb={2}>
-        {isLoading ? (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="300px"
-          >
-            <CircularProgress />
-          </Box>
-        ) : (
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead sx={{ backgroundColor: "#1976d2", color: "white" }}>
-                <TableRow>
-                  <TableCell sx={{ color: "white" }}>Title</TableCell>
-                  <TableCell sx={{ color: "white" }}>Description</TableCell>
-                  <TableCell sx={{ color: "white" }}>Status</TableCell>
-                  <TableCell sx={{ color: "white" }}>Created at</TableCell>
-                  <TableCell sx={{ color: "white" }}>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tickets.map((ticket) => (
-                  <TableRow
-                    key={ticket.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell sx={{ py: 1 }}>{ticket.title}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{ticket.description}</TableCell>
-                    <TableCell sx={{ py: 1 }}>
-                      {displayStatus(ticket.status)}
-                    </TableCell>
-                    <TableCell sx={{ py: 1 }}>{ticket.created_at}</TableCell>
-                    <TableCell sx={{ py: 1 }}>
-                      <IconButton
-                        aria-label="view"
-                        onClick={() => handleViewButton(ticket)}
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="edit"
-                        onClick={() => handleEditButton(ticket)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => handleDeleteButton(ticket)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                      {admin && (
+      <Box
+        mb={2}
+        maxHeight="calc(100vh - 250px)"
+        overflow="auto"
+        border="1px solid lightgrey"
+        borderRadius={3}
+      >
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead
+              sx={{
+                backgroundColor: "#1976d2",
+                color: "white",
+                position: "sticky",
+                top: 0,
+                zIndex: 1,
+              }}
+            >
+              <TableRow>
+                <TableCell sx={{ color: "white" }}>Title</TableCell>
+                <TableCell sx={{ color: "white" }}>Description</TableCell>
+                <TableCell sx={{ color: "white" }}>Status</TableCell>
+                <TableCell sx={{ color: "white" }}>Created at</TableCell>
+                <TableCell sx={{ color: "white" }}>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+          </Table>
+        </TableContainer>
+        <Box maxHeight="calc(100vh - 320px)" overflow="auto">
+          {isLoading ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="300px"
+            >
+              <CircularProgress />
+            </Box>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableBody>
+                  {tickets.map((ticket) => (
+                    <TableRow
+                      key={ticket.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell sx={{ py: 1 }}>{ticket.title}</TableCell>
+                      <TableCell sx={{ py: 1 }}>{ticket.description}</TableCell>
+                      <TableCell sx={{ py: 1 }}>
+                        {displayStatus(ticket.status)}
+                      </TableCell>
+                      <TableCell sx={{ py: 1 }}>{ticket.created_at}</TableCell>
+                      <TableCell sx={{ py: 1 }}>
                         <IconButton
-                          aria-label="clone"
-                          onClick={() => handleCloneButton(ticket)}
+                          aria-label="view"
+                          onClick={() => handleViewButton(ticket)}
                         >
-                          <CloneIcon />
+                          <VisibilityIcon />
                         </IconButton>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
+                        <IconButton
+                          aria-label="edit"
+                          onClick={() => handleEditButton(ticket)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => handleDeleteButton(ticket)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                        {admin && (
+                          <IconButton
+                            aria-label="clone"
+                            onClick={() => handleCloneButton(ticket)}
+                          >
+                            <CloneIcon />
+                          </IconButton>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Box>
       </Box>
-      <TablePagination
-        rowsPerPageOptions={[10, 20, 50]}
-        component="div"
-        count={totalCount || 0}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      <Box border="1px solid lightgrey" borderRadius={3}>
+        <TablePagination
+          rowsPerPageOptions={[10, 20, 50]}
+          component="div"
+          count={totalCount || 0}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Box>
     </Box>
   );
 }
