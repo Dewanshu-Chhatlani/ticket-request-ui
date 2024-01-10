@@ -18,6 +18,7 @@ import {
   MenuItem,
   FormControl,
   CircularProgress,
+  InputLabel,
   FormControlLabel,
   FormLabel,
   Radio,
@@ -51,7 +52,11 @@ function ListRequestsTable() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [open, setOpen] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
-  const [recordForAction, setRecordForAction] = useState({});
+  const [recordForAction, setRecordForAction] = useState({
+    title: "",
+    description: "",
+    status: "open",
+  });
   const [mode, setMode] = useState("");
 
   const { admin } = useSelector((state) => state?.auth?.user?.user);
@@ -82,6 +87,7 @@ function ListRequestsTable() {
   const handleSortChange = (event) => {
     setPage(0);
     setSortBy(event.target.value);
+    setSortOrder("asc");
     setSearchValue(searchText);
   };
 
@@ -94,7 +100,7 @@ function ListRequestsTable() {
   const handleCreateButton = () => {
     setOpen(true);
     setMode("create");
-    setRecordForAction({ title: "", description: "" });
+    setRecordForAction({ title: "", description: "", status: "open" });
   };
 
   const handleEditButton = (ticket) => {
@@ -123,14 +129,14 @@ function ListRequestsTable() {
 
   const handlePopupClose = () => {
     setOpen(false);
-    setRecordForAction({});
+    setRecordForAction({ title: "", description: "", status: "open" });
     setMode("");
   };
 
   const handleConfirmationClose = () => {
     setConfirmationOpen(false);
     setMode("");
-    setRecordForAction({});
+    setRecordForAction({ title: "", description: "", status: "open" });
   };
 
   const handleConfirmation = () => {
@@ -148,6 +154,8 @@ function ListRequestsTable() {
         return "Open";
       case "in_progress":
         return "In Progress";
+      case "resolved":
+        return "Resolved";
       case "closed":
         return "Closed";
       default:
@@ -181,12 +189,14 @@ function ListRequestsTable() {
           />
         </Box>
         <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-          <FormLabel>Sort By</FormLabel>
+          <InputLabel id="sort-by-label">Sort By</InputLabel>
           <Select
+            id="sort-by"
+            labelId="sort-by-label"
             value={sortBy}
             onChange={handleSortChange}
             label="Sort By"
-            sx={{ height: 32, borderRadius: 20 }} // Reduced height
+            sx={{ borderRadius: 20 }}
           >
             <MenuItem value="">
               <em>None</em>

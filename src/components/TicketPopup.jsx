@@ -6,13 +6,22 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createTicket, updateTicket } from "../redux/actions/ticketActions";
 
 function TicketPopup({ open, handleClose, mode, ticket }) {
   const dispatch = useDispatch();
-  const [ticketData, setTicketData] = useState({ title: "", description: "" });
+  const { admin } = useSelector((state) => state?.auth?.user?.user);
+  const [ticketData, setTicketData] = useState({
+    title: "",
+    description: "",
+    status: "open",
+  });
 
   useEffect(() => {
     setTicketData({ ...ticket });
@@ -34,7 +43,7 @@ function TicketPopup({ open, handleClose, mode, ticket }) {
 
   const closePopup = () => {
     handleClose();
-    setTicketData({ title: "", description: "" });
+    setTicketData({ title: "", description: "", status: "open" });
   };
 
   return (
@@ -68,6 +77,24 @@ function TicketPopup({ open, handleClose, mode, ticket }) {
           value={ticketData.title}
           onChange={handleInputChange}
         />
+        <FormControl variant="outlined" sx={{ minWidth: 120, my: 2 }}>
+          <InputLabel id="status-label">Status</InputLabel>
+          <Select
+            labelId="status-label"
+            id="status"
+            name="status"
+            value={ticketData.status}
+            disabled={!admin}
+            label="Status"
+            sx={{ borderRadius: 20 }}
+            onChange={handleInputChange}
+          >
+            <MenuItem value="open">Open</MenuItem>
+            <MenuItem value="in_progress">In Progress</MenuItem>
+            <MenuItem value="resolved">Resolved</MenuItem>
+            <MenuItem value="closed">Closed</MenuItem>
+          </Select>
+        </FormControl>
         <TextField
           margin="dense"
           id="description"
