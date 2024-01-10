@@ -17,8 +17,11 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
   CircularProgress,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -45,6 +48,7 @@ function ListRequestsTable() {
   const [searchText, setSearchText] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
   const [open, setOpen] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [recordForAction, setRecordForAction] = useState({});
@@ -56,8 +60,10 @@ function ListRequestsTable() {
   const isLoading = useSelector((state) => state.ticket.loading);
 
   useEffect(() => {
-    dispatch(fetchTicket(page + 1, rowsPerPage, sortBy, searchValue));
-  }, [dispatch, page, rowsPerPage, sortBy, searchValue]);
+    dispatch(
+      fetchTicket(page + 1, rowsPerPage, sortBy, sortOrder, searchValue)
+    );
+  }, [dispatch, page, rowsPerPage, sortBy, sortOrder, searchValue]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -76,6 +82,12 @@ function ListRequestsTable() {
   const handleSortChange = (event) => {
     setPage(0);
     setSortBy(event.target.value);
+    setSearchValue(searchText);
+  };
+
+  const handleSortOrderChange = (event) => {
+    setPage(0);
+    setSortOrder(event.target.value);
     setSearchValue(searchText);
   };
 
@@ -130,6 +142,19 @@ function ListRequestsTable() {
     handleConfirmationClose();
   };
 
+  const displayStatus = (status) => {
+    switch (status) {
+      case "open":
+        return "Open";
+      case "in_progress":
+        return "In Progress";
+      case "closed":
+        return "Closed";
+      default:
+        return "";
+    }
+  };
+
   return (
     <Box mt={4} mx={2}>
       <Box
@@ -156,9 +181,8 @@ function ListRequestsTable() {
           />
         </Box>
         <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-          <InputLabel id="sort-by-label">Sort By</InputLabel>
+          <FormLabel>Sort By</FormLabel>
           <Select
-            labelId="sort-by-label"
             value={sortBy}
             onChange={handleSortChange}
             label="Sort By"
@@ -171,6 +195,29 @@ function ListRequestsTable() {
             <MenuItem value="description">Description</MenuItem>
           </Select>
         </FormControl>
+        {sortBy && (
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Sort Order</FormLabel>
+            <RadioGroup
+              row
+              aria-label="sort-order"
+              name="sort-order"
+              value={sortOrder}
+              onChange={handleSortOrderChange}
+            >
+              <FormControlLabel
+                value="asc"
+                control={<Radio />}
+                label="Ascending"
+              />
+              <FormControlLabel
+                value="desc"
+                control={<Radio />}
+                label="Descending"
+              />
+            </RadioGroup>
+          </FormControl>
+        )}
         <Button
           variant="contained"
           color="success"
@@ -210,7 +257,7 @@ function ListRequestsTable() {
                 <TableRow>
                   <TableCell sx={{ color: "white" }}>Title</TableCell>
                   <TableCell sx={{ color: "white" }}>Description</TableCell>
-                  <TableCell sx={{ color: "white" }}>User ID</TableCell>
+                  <TableCell sx={{ color: "white" }}>Status</TableCell>
                   <TableCell sx={{ color: "white" }}>Created at</TableCell>
                   <TableCell sx={{ color: "white" }}>Actions</TableCell>
                 </TableRow>
@@ -223,7 +270,9 @@ function ListRequestsTable() {
                   >
                     <TableCell sx={{ py: 1 }}>{ticket.title}</TableCell>
                     <TableCell sx={{ py: 1 }}>{ticket.description}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{ticket.user_id}</TableCell>
+                    <TableCell sx={{ py: 1 }}>
+                      {displayStatus(ticket.status)}
+                    </TableCell>
                     <TableCell sx={{ py: 1 }}>{ticket.created_at}</TableCell>
                     <TableCell sx={{ py: 1 }}>
                       <IconButton

@@ -10,6 +10,7 @@ import {
   Avatar,
   Badge,
 } from "@mui/material";
+import LocalActivityIcon from "@mui/icons-material/LocalActivity";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearUserData } from "../redux/actions/authActions";
@@ -39,9 +40,14 @@ function Navbar() {
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#333333" }}>
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Ticket Request App
+      <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ display: "flex", alignItems: "center" }}
+        >
+          <LocalActivityIcon sx={{ mr: 1, fontSize: 32, color: "yellow" }} />
+          <Box sx={{ display: "inline-block" }}> Ticket Request App</Box>
         </Typography>
         <Box>
           {admin ? <Badge badgeContent={"Admin"} color="primary" /> : null}

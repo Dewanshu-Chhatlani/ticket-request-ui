@@ -75,6 +75,7 @@ export const fetchTicket = (
   page = 1,
   perPage = 10,
   sortBy = "",
+  sortOrder = "asc",
   searchQuery = ""
 ) => {
   return async (dispatch, getState) => {
@@ -85,7 +86,7 @@ export const fetchTicket = (
     let listTicketsUrl = `http://localhost:5000/tickets?page=${page}&per_page=${perPage}`;
 
     if (sortBy) {
-      listTicketsUrl += `&sort_by=${sortBy}`;
+      listTicketsUrl += `&sort_by=${sortBy}&sort_order=${sortOrder}`;
     }
 
     if (searchQuery) {
