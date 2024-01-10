@@ -5,6 +5,8 @@ import {
   Container,
   Typography,
   Snackbar,
+  Box,
+  CircularProgress,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { signInUser } from "../redux/actions/authActions";
@@ -13,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 const SignIn = () => {
   const dispatch = useDispatch();
   const signInError = useSelector((state) => state.auth.error);
+  const isLoading = useSelector((state) => state.auth.loading);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
@@ -78,9 +81,15 @@ const SignIn = () => {
           fullWidth
           required
         />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Sign In
-        </Button>
+        {isLoading ? (
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Sign In
+          </Button>
+        )}
       </form>
       <Snackbar
         open={openSnackbar}
