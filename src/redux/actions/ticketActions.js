@@ -43,6 +43,20 @@ export const updateTicketFailure = (error) => ({
   payload: error,
 });
 
+export const cloneTicketRequest = () => ({
+  type: types.CLONE_TICKET_REQUEST,
+});
+
+export const cloneTicketSuccess = (ticketData) => ({
+  type: types.CLONE_TICKET_SUCCESS,
+  payload: ticketData,
+});
+
+export const cloneTicketFailure = (error) => ({
+  type: types.CLONE_TICKET_FAILURE,
+  payload: error,
+});
+
 export const deleteTicketRequest = () => ({
   type: types.DELETE_TICKET_REQUEST,
 });
@@ -132,6 +146,32 @@ export const updateTicket = (ticketData) => {
       })
       .catch((error) => {
         dispatch(updateTicketFailure(error.message));
+      });
+  };
+};
+
+export const cloneTicket = (ticketData) => {
+  return (dispatch, getState) => {
+    dispatch(cloneTicketRequest());
+
+    const { token } = getState().auth.user;
+
+    axios
+      .post(
+        `http://localhost:5000/tickets/${ticketData.id}/clone`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        dispatch(cloneTicketSuccess(response.data));
+      })
+      .catch((error) => {
+        dispatch(cloneTicketFailure(error.message));
       });
   };
 };

@@ -14,6 +14,7 @@ const ticketReducer = (state = initialState, action) => {
     case types.FETCH_TICKET_REQUEST:
     case types.CREATE_TICKET_REQUEST:
     case types.UPDATE_TICKET_REQUEST:
+    case types.CLONE_TICKET_REQUEST:
     case types.DELETE_TICKET_REQUEST:
       return {
         ...state,
@@ -45,6 +46,13 @@ const ticketReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         ticket: [...tickets],
+      };
+    case types.CLONE_TICKET_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        ticket: [action.payload, ...state.ticket],
+        total_count: state.total_count + 1,
       };
     case types.DELETE_TICKET_SUCCESS:
       tickets = tickets.filter((ticket) => ticket.id !== action.payload.id);

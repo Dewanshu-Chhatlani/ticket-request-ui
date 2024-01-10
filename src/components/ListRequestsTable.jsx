@@ -26,11 +26,16 @@ import {
   Delete as DeleteIcon,
   AddCircleOutline as AddCircleOutlineIcon,
   Search as SearchIcon,
+  FileCopy as CloneIcon,
 } from "@mui/icons-material";
 
 import TicketPopup from "./TicketPopup";
-import DeleteConfirmationPopup from "./DeleteConfirmationPopup";
-import { fetchTicket, deleteTicket } from "../redux/actions/ticketActions";
+import ConfirmationPopup from "./ConfirmationPopup";
+import {
+  fetchTicket,
+  deleteTicket,
+  cloneTicket,
+} from "../redux/actions/ticketActions";
 
 function ListRequestsTable() {
   const dispatch = useDispatch();
@@ -38,19 +43,21 @@ function ListRequestsTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchText, setSearchText] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [open, setOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [recordForAction, setRecordForAction] = useState({});
   const [mode, setMode] = useState("");
 
+  const { admin } = useSelector((state) => state?.auth?.user?.user);
   const tickets = useSelector((state) => state.ticket.ticket);
   const totalCount = useSelector((state) => state.ticket.total_count);
   const isLoading = useSelector((state) => state.ticket.loading);
 
   useEffect(() => {
-    dispatch(fetchTicket(page + 1, rowsPerPage, sortBy));
-  }, [dispatch, page, rowsPerPage, sortBy]);
+    dispatch(fetchTicket(page + 1, rowsPerPage, sortBy, searchValue));
+  }, [dispatch, page, rowsPerPage, sortBy, searchValue]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -62,12 +69,14 @@ function ListRequestsTable() {
   };
 
   const handleSearch = () => {
-    dispatch(fetchTicket(page + 1, rowsPerPage, sortBy, searchText));
+    setPage(0);
+    setSearchValue(searchText);
   };
 
   const handleSortChange = (event) => {
     setPage(0);
     setSortBy(event.target.value);
+    setSearchValue(searchText);
   };
 
   const handleCreateButton = () => {
@@ -89,8 +98,14 @@ function ListRequestsTable() {
   };
 
   const handleDeleteButton = (ticket) => {
-    setDeleteOpen(true);
+    setConfirmationOpen(true);
     setMode("delete");
+    setRecordForAction(ticket);
+  };
+
+  const handleCloneButton = (ticket) => {
+    setConfirmationOpen(true);
+    setMode("clone");
     setRecordForAction(ticket);
   };
 
@@ -100,15 +115,19 @@ function ListRequestsTable() {
     setMode("");
   };
 
-  const handleDeleteClose = () => {
-    setDeleteOpen(false);
+  const handleConfirmationClose = () => {
+    setConfirmationOpen(false);
     setMode("");
     setRecordForAction({});
   };
 
-  const handleDeleteConfirmation = () => {
-    dispatch(deleteTicket(recordForAction));
-    handleDeleteClose();
+  const handleConfirmation = () => {
+    if (mode === "delete") {
+      dispatch(deleteTicket(recordForAction));
+    } else if (mode === "clone") {
+      dispatch(cloneTicket(recordForAction));
+    }
+    handleConfirmationClose();
   };
 
   return (
@@ -168,10 +187,11 @@ function ListRequestsTable() {
         mode={mode}
         ticket={recordForAction}
       />
-      <DeleteConfirmationPopup
-        open={deleteOpen}
-        handleClose={handleDeleteClose}
-        handleDelete={handleDeleteConfirmation}
+      <ConfirmationPopup
+        open={confirmationOpen}
+        handleClose={handleConfirmationClose}
+        handleConfirmation={handleConfirmation}
+        mode={mode}
       />
       <Box mb={2}>
         {isLoading ? (
@@ -224,6 +244,14 @@ function ListRequestsTable() {
                       >
                         <DeleteIcon />
                       </IconButton>
+                      {admin && (
+                        <IconButton
+                          aria-label="clone"
+                          onClick={() => handleCloneButton(ticket)}
+                        >
+                          <CloneIcon />
+                        </IconButton>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
