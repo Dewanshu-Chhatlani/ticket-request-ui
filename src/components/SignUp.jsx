@@ -7,6 +7,7 @@ import {
   Snackbar,
   Box,
   CircularProgress,
+  Grid,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpUser } from "../redux/actions/authActions";
@@ -61,26 +62,33 @@ const SignUp = () => {
         Sign Up
       </Typography>
       <form onSubmit={handleSubmit}>
-        <TextField
-          id="first_name"
-          name="first_name"
-          label="First Name"
-          variant="outlined"
-          margin="normal"
-          value={first_name}
-          onChange={handleInputChange}
-          fullWidth
-        />
-        <TextField
-          id="last_name"
-          name="last_name"
-          label="Last Name"
-          variant="outlined"
-          margin="normal"
-          value={last_name}
-          onChange={handleInputChange}
-          fullWidth
-        />
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <TextField
+              id="first_name"
+              name="first_name"
+              label="First Name"
+              variant="outlined"
+              margin="normal"
+              value={first_name}
+              onChange={handleInputChange}
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="last_name"
+              name="last_name"
+              label="Last Name"
+              variant="outlined"
+              margin="normal"
+              value={last_name}
+              onChange={handleInputChange}
+              fullWidth
+            />
+          </Grid>
+        </Grid>
         <TextField
           id="email"
           name="email"

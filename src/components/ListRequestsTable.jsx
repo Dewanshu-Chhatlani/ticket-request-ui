@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -43,6 +44,7 @@ import {
 
 function ListRequestsTable() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -59,10 +61,14 @@ function ListRequestsTable() {
   });
   const [mode, setMode] = useState("");
 
-  const admin = useSelector((state) => state?.auth?.user?.user?.admin);
+  const user = useSelector((state) => state?.auth?.user?.user);
   const tickets = useSelector((state) => state.ticket.ticket);
   const totalCount = useSelector((state) => state.ticket.total_count);
   const isLoading = useSelector((state) => state.ticket.loading);
+
+  if (!user) {
+    navigate("/");
+  }
 
   useEffect(() => {
     dispatch(
@@ -322,7 +328,7 @@ function ListRequestsTable() {
                         >
                           <DeleteIcon />
                         </IconButton>
-                        {admin && (
+                        {user?.admin && (
                           <IconButton
                             aria-label="clone"
                             onClick={() => handleCloneButton(ticket)}
