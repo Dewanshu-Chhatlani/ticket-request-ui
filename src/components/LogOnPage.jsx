@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Tabs, Tab, Box, Container, Card, CardContent } from "@mui/material";
+import Navbar from "./Navbar";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 
@@ -11,28 +12,31 @@ const LogOnPage = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Tabs value={tabIndex} onChange={handleChange} centered>
-        <Tab label="Sign In" />
-        <Tab label="Sign Up" />
-      </Tabs>
-      <Box sx={{ py: 2 }}>
-        <Card variant="outlined">
-          <CardContent>
-            {tabIndex === 0 && (
-              <TabPanel value={tabIndex} index={0}>
-                <SignIn />
-              </TabPanel>
-            )}
-            {tabIndex === 1 && (
-              <TabPanel value={tabIndex} index={1}>
-                <SignUp />
-              </TabPanel>
-            )}
-          </CardContent>
-        </Card>
-      </Box>
-    </Container>
+    <>
+      <Navbar />
+      <Container maxWidth="sm">
+        <Tabs value={tabIndex} onChange={handleChange} centered>
+          <Tab label="Sign In" />
+          <Tab label="Sign Up" />
+        </Tabs>
+        <Box sx={{ py: 2 }}>
+          <Card variant="outlined">
+            <CardContent>
+              {tabIndex === 0 && (
+                <TabPanel value={tabIndex} index={0}>
+                  <SignIn />
+                </TabPanel>
+              )}
+              {tabIndex === 1 && (
+                <TabPanel value={tabIndex} index={1}>
+                  <SignUp />
+                </TabPanel>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
+      </Container>
+    </>
   );
 };
 

@@ -10,13 +10,14 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Typography,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { createTicket, updateTicket } from "../redux/actions/ticketActions";
 
 function TicketPopup({ open, handleClose, mode, ticket }) {
   const dispatch = useDispatch();
-  const { admin } = useSelector((state) => state?.auth?.user?.user);
+  const admin = useSelector((state) => state?.auth?.user?.user?.admin);
   const [ticketData, setTicketData] = useState({
     title: "",
     description: "",
@@ -26,6 +27,21 @@ function TicketPopup({ open, handleClose, mode, ticket }) {
   useEffect(() => {
     setTicketData({ ...ticket });
   }, [ticket]);
+
+  const displayStatus = (status) => {
+    switch (status) {
+      case "open":
+        return "Open";
+      case "in_progress":
+        return "In Progress";
+      case "resolved":
+        return "Resolved";
+      case "closed":
+        return "Closed";
+      default:
+        return "";
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,7 +69,7 @@ function TicketPopup({ open, handleClose, mode, ticket }) {
       PaperProps={{
         sx: {
           width: "40%",
-          maxHeight: 450,
+          maxHeight: 600,
         },
       }}
       maxWidth="md"
@@ -66,47 +82,78 @@ function TicketPopup({ open, handleClose, mode, ticket }) {
           : "View Ticket"}
       </DialogTitle>
       <DialogContent dividers>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="title"
-          name="title"
-          label="Title"
-          type="text"
-          fullWidth
-          value={ticketData.title}
-          onChange={handleInputChange}
-        />
-        <FormControl variant="outlined" sx={{ minWidth: 120, my: 2 }}>
-          <InputLabel id="status-label">Status</InputLabel>
-          <Select
-            labelId="status-label"
-            id="status"
-            name="status"
-            value={ticketData.status}
-            disabled={!admin}
-            label="Status"
-            sx={{ borderRadius: 20 }}
+        <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+          <span style={{ fontWeight: "bold" }}>Ticket Number:</span> #
+          {ticketData.id}
+        </Typography>
+        {mode === "view" ? (
+          <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+            <span style={{ fontWeight: "bold" }}>Title: </span>
+            {ticketData.title}
+          </Typography>
+        ) : (
+          <TextField
+            autoFocus
+            margin="dense"
+            id="title"
+            name="title"
+            label="Title"
+            type="text"
+            fullWidth
+            value={ticketData.title}
             onChange={handleInputChange}
-          >
-            <MenuItem value="open">Open</MenuItem>
-            <MenuItem value="in_progress">In Progress</MenuItem>
-            <MenuItem value="resolved">Resolved</MenuItem>
-            <MenuItem value="closed">Closed</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          margin="dense"
-          id="description"
-          name="description"
-          label="Description"
-          type="text"
-          fullWidth
-          multiline
-          rows={4}
-          value={ticketData.description}
-          onChange={handleInputChange}
-        />
+            disabled={mode === "view"}
+          />
+        )}
+        {mode === "view" ? (
+          <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+            <span style={{ fontWeight: "bold" }}>Status: </span>
+            {displayStatus(ticketData.status)}
+          </Typography>
+        ) : (
+          <FormControl variant="outlined" sx={{ minWidth: 120, my: 2 }}>
+            <InputLabel id="status-label">Status</InputLabel>
+            <Select
+              labelId="status-label"
+              id="status"
+              name="status"
+              value={ticketData.status}
+              disabled={!admin || mode === "view"}
+              label="Status"
+              sx={{ borderRadius: 20 }}
+              onChange={handleInputChange}
+            >
+              <MenuItem value="open">Open</MenuItem>
+              <MenuItem value="in_progress">In Progress</MenuItem>
+              <MenuItem value="resolved">Resolved</MenuItem>
+              <MenuItem value="closed">Closed</MenuItem>
+            </Select>
+          </FormControl>
+        )}
+        {mode === "view" ? (
+          <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+            <span style={{ fontWeight: "bold" }}>Description: </span>
+            {ticketData.description}
+          </Typography>
+        ) : (
+          <TextField
+            margin="dense"
+            id="description"
+            name="description"
+            label="Description"
+            type="text"
+            fullWidth
+            multiline
+            rows={4}
+            value={ticketData.description}
+            onChange={handleInputChange}
+            disabled={mode === "view"}
+          />
+        )}
+        <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+          <span style={{ fontWeight: "bold" }}>Created at: </span>
+          {ticketData.created_at}
+        </Typography>
       </DialogContent>
       {mode === "create" || mode === "edit" ? (
         <DialogActions>

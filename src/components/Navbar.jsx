@@ -22,7 +22,7 @@ function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { admin } = useSelector((state) => state?.auth?.user?.user);
+  const user = useSelector((state) => state?.auth?.user?.user);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -49,36 +49,40 @@ function Navbar() {
           <LocalActivityIcon sx={{ mr: 1, fontSize: 32, color: "yellow" }} />
           <Box sx={{ display: "inline-block" }}> Ticket Request App</Box>
         </Typography>
-        <Box>
-          {admin ? <Badge badgeContent={"Admin"} color="primary" /> : null}
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            color="inherit"
-          >
-            <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={open}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-          </Menu>
-        </Box>
+        {user ? (
+          <Box>
+            {user?.admin ? (
+              <Badge badgeContent={"Admin"} color="primary" />
+            ) : null}
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={open}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
+          </Box>
+        ) : null}
       </Toolbar>
     </AppBar>
   );

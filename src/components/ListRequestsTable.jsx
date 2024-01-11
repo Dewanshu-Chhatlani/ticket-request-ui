@@ -59,7 +59,7 @@ function ListRequestsTable() {
   });
   const [mode, setMode] = useState("");
 
-  const { admin } = useSelector((state) => state?.auth?.user?.user);
+  const admin = useSelector((state) => state?.auth?.user?.user?.admin);
   const tickets = useSelector((state) => state.ticket.ticket);
   const totalCount = useSelector((state) => state.ticket.total_count);
   const isLoading = useSelector((state) => state.ticket.loading);
