@@ -51,9 +51,11 @@ function Navbar() {
         </Typography>
         {user ? (
           <Box>
-            {user?.admin ? (
-              <Badge badgeContent={"Admin"} color="primary" />
-            ) : null}
+            <Badge
+              badgeContent={user?.admin ? "Admin" : null}
+              color="primary"
+            />
+
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -62,7 +64,16 @@ function Navbar() {
               onClick={handleMenu}
               color="inherit"
             >
-              <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+              <Avatar
+                sx={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: "pink",
+                  color: "black",
+                }}
+              >
+                {user.first_name[0]}
+              </Avatar>
             </IconButton>
             <Menu
               id="menu-appbar"
