@@ -275,10 +275,18 @@ function ListRequestsTable() {
               }}
             >
               <TableRow>
-                <TableCell sx={{ color: "white" }}>Title</TableCell>
-                <TableCell sx={{ color: "white" }}>Description</TableCell>
-                <TableCell sx={{ color: "white" }}>Status</TableCell>
-                <TableCell sx={{ color: "white" }}>Created at</TableCell>
+                <TableCell sx={{ color: "white", width: "245px" }}>
+                  Title
+                </TableCell>
+                <TableCell sx={{ color: "white", width: "490px" }}>
+                  Description
+                </TableCell>
+                <TableCell sx={{ color: "white", width: "75px" }}>
+                  Status
+                </TableCell>
+                <TableCell sx={{ color: "white", width: "190px" }}>
+                  Created at
+                </TableCell>
                 <TableCell sx={{ color: "white" }}>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -303,12 +311,18 @@ function ListRequestsTable() {
                       key={ticket.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      <TableCell sx={{ py: 1 }}>{ticket.title}</TableCell>
-                      <TableCell sx={{ py: 1 }}>{ticket.description}</TableCell>
-                      <TableCell sx={{ py: 1 }}>
+                      <TableCell sx={{ py: 1, width: "245px" }}>
+                        {ticket.title}
+                      </TableCell>
+                      <TableCell sx={{ py: 1, width: "490px" }}>
+                        {ticket.description}
+                      </TableCell>
+                      <TableCell sx={{ py: 1, width: "75px" }}>
                         {displayStatus(ticket.status)}
                       </TableCell>
-                      <TableCell sx={{ py: 1 }}>{ticket.created_at}</TableCell>
+                      <TableCell sx={{ py: 1, width: "180px" }}>
+                        {ticket.created_at}
+                      </TableCell>
                       <TableCell sx={{ py: 1 }}>
                         <IconButton
                           aria-label="view"
