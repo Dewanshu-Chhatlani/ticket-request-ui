@@ -209,6 +209,7 @@ function ListRequestsTable() {
             </MenuItem>
             <MenuItem value="title">Title</MenuItem>
             <MenuItem value="description">Description</MenuItem>
+            <MenuItem value="created_at">Created at</MenuItem>
           </Select>
         </FormControl>
         {sortBy && (
