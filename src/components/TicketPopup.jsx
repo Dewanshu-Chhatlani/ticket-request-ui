@@ -17,7 +17,7 @@ import { createTicket, updateTicket } from "../redux/actions/ticketActions";
 
 function TicketPopup({ open, handleClose, mode, ticket }) {
   const dispatch = useDispatch();
-  const admin = useSelector((state) => state?.auth?.user?.user?.admin);
+  const role = useSelector((state) => state?.auth?.user?.user?.role);
   const [ticketData, setTicketData] = useState({
     title: "",
     description: "",
@@ -118,7 +118,7 @@ function TicketPopup({ open, handleClose, mode, ticket }) {
               id="status"
               name="status"
               value={ticketData.status}
-              disabled={!admin || mode === "view"}
+              disabled={role !== "admin" || mode === "view"}
               label="Status"
               sx={{ borderRadius: 20 }}
               onChange={handleInputChange}

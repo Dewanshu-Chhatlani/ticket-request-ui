@@ -343,7 +343,7 @@ function ListRequestsTable() {
                         >
                           <DeleteIcon />
                         </IconButton>
-                        {user?.admin && (
+                        {user?.role === "admin" && (
                           <IconButton
                             aria-label="clone"
                             onClick={() => handleCloneButton(ticket)}

@@ -52,7 +52,7 @@ function Navbar() {
         {user ? (
           <Box>
             <Badge
-              badgeContent={user?.admin ? "Admin" : null}
+              badgeContent={user?.role === "admin" ? "Admin" : null}
               color="primary"
             />
 
